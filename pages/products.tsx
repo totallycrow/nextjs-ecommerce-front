@@ -1,4 +1,4 @@
-import { dehydrate, QueryClient } from "@tanstack/react-query";
+import { dehydrate, QueryClient, useQuery } from "@tanstack/react-query";
 import { GetServerSideProps } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -7,10 +7,13 @@ import { CartControls } from "../components/CartControls";
 import ProductsAPI from "../services/ProductsAPI";
 import { IProduct } from "../types/productTypes";
 
-export const ProductsPage = () => {
-  const { data, error } = useSWR("products", (arg0) =>
-    ProductsAPI.get<Array<IProduct>>(arg0)
+export const ProductsPage = (props: any) => {
+  const { data, error } = useQuery(
+    ["products"],
+    () => ProductsAPI.getAllProducts<Array<IProduct>>(),
+    { initialData: props.posts }
   );
+
   if (error) return <div>Error Fetching Data</div>;
   if (data instanceof Error) return <div>Error Fetching Data</div>;
   return (
@@ -39,16 +42,7 @@ export const ProductsPage = () => {
 
 export default ProductsPage;
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const queryClient = new QueryClient();
-
-  await queryClient.prefetchQuery(["productsAll"], () =>
-    ProductsAPI.getAllProducts<Array<IProduct>>()
-  );
-
-  return {
-    props: {
-      dehydratedState: dehydrate(queryClient),
-    },
-  };
-};
+export async function getStaticProps() {
+  const products = await ProductsAPI.getAllProducts<Array<IProduct>>();
+  return { props: { products } };
+}
