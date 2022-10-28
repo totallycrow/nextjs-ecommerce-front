@@ -31,6 +31,8 @@ export default class ProductsAPI {
   }
 
   public static async get<T>(endpoint: string): Promise<T | Error> {
+    console.log("GET");
+
     const targetURL = host + endpoint;
     console.log(targetURL);
     try {

@@ -1,12 +1,16 @@
-import { useBasketManager } from "../hooks/useBasketManager";
+import { useSelector } from "react-redux";
+import { usePromoInput } from "../hooks/usePromoInput";
+import { RootState } from "../store/store";
 
 export const Basket = () => {
-  const { totalPrice, promoInput, setPromoInput, basketItems, basketState } =
-    useBasketManager();
+  const { promoInput, setPromoInput } = usePromoInput();
+  const basketState = useSelector((state: RootState) => state.basket);
+  const idsInBasket = Object.keys(basketState.items);
+  console.log(idsInBasket);
 
   return (
     <div className="w-2/6 bg-slate-100">
-      Basket TOTALS: {totalPrice}
+      Basket TOTALS: {basketState.totalPrice}
       <input
         type="text"
         value={promoInput}
@@ -14,10 +18,10 @@ export const Basket = () => {
         placeholder="PROMO CODE"
       />
       <div>
-        {basketItems.map((item) => (
-          <div key={basketState[item].id}>
-            {basketState[item].title}
-            <div>Qty: {basketState[item].qty}</div>
+        {idsInBasket.map((item) => (
+          <div key={basketState.items[item].id}>
+            {basketState.items[item].title}
+            <div>Qty: {basketState.items[item].qty}</div>
           </div>
         ))}
       </div>

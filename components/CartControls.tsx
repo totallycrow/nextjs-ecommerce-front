@@ -9,7 +9,7 @@ export const CartControls: React.FC<IProductTile> = ({
   item,
 }: IProductTile) => {
   const dispatch = useDispatch();
-  const basketState = useSelector((state: RootState) => state.basket);
+  const basketState = useSelector((state: RootState) => state.basket.items);
   return (
     <div>
       <div>
