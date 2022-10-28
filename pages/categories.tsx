@@ -5,17 +5,8 @@ import { useCategorySelection } from "../hooks/useCategorySelection";
 import ProductsAPI, { IProduct } from "../services/ProductsAPI";
 
 const CategoriesPage = () => {
-  const { data, error, setCategory, category } = useCategorySelection();
-
-  const shouldFetch = category !== null;
-  const categoryData = useQuery(
-    ["products/category/"],
-    () =>
-      fetch(`https://fakestoreapi.com/products/category/${category}`).then(
-        (res) => res.json()
-      ),
-    { enabled: shouldFetch }
-  );
+  const { data, error, setCategory, category, categoryData } =
+    useCategorySelection();
 
   if (data instanceof Error) return <div>Error Fetching Data</div>;
   if (error) return <div>failed to load</div>;
@@ -31,7 +22,14 @@ const CategoriesPage = () => {
         console.log();
         return (
           <div key={category}>
-            <button onClick={() => setCategory(category)}>{category}</button>
+            <button
+              onClick={() => {
+                setCategory(category);
+                categoryData.refetch();
+              }}
+            >
+              {category}
+            </button>
           </div>
         );
       })}

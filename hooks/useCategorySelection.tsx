@@ -11,5 +11,15 @@ export const useCategorySelection = () => {
     ProductsAPI.get<Array<string>>("products/categories")
   );
 
-  return { data, error, setCategory, category };
+  const shouldFetch = category !== null;
+  const categoryData = useQuery(
+    [`products/category/${category}`],
+    () =>
+      fetch(`https://fakestoreapi.com/products/category/${category}`).then(
+        (res) => res.json()
+      ),
+    { enabled: shouldFetch }
+  );
+
+  return { data, error, setCategory, category, categoryData };
 };
